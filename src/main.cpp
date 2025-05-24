@@ -1,40 +1,38 @@
 #include <Arduino.h>
 #include <SPI.h>
+#include <MFRC522.h>
 
-#define PIN_MOSI 23
-#define PIN_MISO 19
-#define PIN_SCK 18
-#define PIN_SS 5 // Qualquer pino só para SPI.begin()
+// Pinos conforme a imagem
+#define SS_PIN 4   // SDA
+#define RST_PIN 2  // RST
 
-void setup()
-{
-    Serial.begin(115200);
-    while (!Serial);
+MFRC522 mfrc522(SS_PIN, RST_PIN);  // Criar instância do objeto MFRC522
 
-    SPI.begin(PIN_SCK, PIN_MISO, PIN_MOSI, PIN_SS);
-    SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
-
+void setup() {
+  Serial.begin(115200);
+  SPI.begin();               // Iniciar barramento SPI
+  mfrc522.PCD_Init();        // Iniciar MFRC522
+  Serial.println("Aproxime um cartão RFID do leitor...");
 }
 
-void loop()
-{
+void loop() {
+  // Verifica se há nova tag presente
+  if (!mfrc522.PICC_IsNewCardPresent()) {
+    return;
+  }
 
-    byte dataToSend = 0x12;
-    byte received;
+  // Verifica se consegue ler o conteúdo
+  if (!mfrc522.PICC_ReadCardSerial()) {
+    return;
+  }
 
-    digitalWrite(PIN_SS, LOW);
-    received = SPI.transfer(dataToSend);
-    digitalWrite(PIN_SS, HIGH);
-    SPI.endTransaction();
+  // Mostrar UID no Serial Monitor
+  Serial.print("UID da tag: ");
+  for (byte i = 0; i < mfrc522.uid.size; i++) {
+    Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
+    Serial.print(mfrc522.uid.uidByte[i], HEX);
+  }
+  Serial.println();
 
-    if (received == dataToSend)
-    {
-        Serial.println("✅ SPI funcionando (loopback ok)");
-    }
-    else
-    {
-        Serial.println("❌ SPI falhou - problema no ESP32 ou fiação");
-    }
-
-    delay(500);
+  delay(1000);  // Aguarda 1 segundo antes de continuar
 }
