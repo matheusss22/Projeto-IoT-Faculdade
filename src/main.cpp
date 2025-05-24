@@ -1,24 +1,13 @@
 #include <Arduino.h>
 
+#define PIN GPIO_NUM_32
+#define TIME 500
+
 void setup() {
-    Serial.begin(19200);
-    pinMode(LED_BUILTIN, OUTPUT);
+    pinMode(PIN, OUTPUT);
 }
 
 void loop() {
-
-    int estado_led = 0;
-
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(1000);
-
-    estado_led = digitalRead(LED_BUILTIN);
-    Serial.println(estado_led);
-
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(1000);
-
-    estado_led = digitalRead(LED_BUILTIN);
-    Serial.println(estado_led);
-    
+    digitalWrite(PIN, !digitalRead(PIN));
+    delay(TIME);
 }
