@@ -1,3 +1,21 @@
-# Projeto IoT Estácio 🤖🚀
+# 🚀 Projeto ESP32 - Pisca LED
 
-[Curso de Git](https://www.youtube.com/playlist?list=PLcoYAcR89n-qbO7YAVj5S0alABLis_QVU)    
+Bem-vindo ao projeto **Pisca LED com ESP32**! Este projeto tem como objetivo demonstrar um exemplo básico de controle de um LED utilizando a placa **ESP32**, ideal para iniciantes em eletrônica e programação embarcada.
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+- 📟 **ESP32** (placa de desenvolvimento)
+- ⚡ **PlatformIO**
+- 💡 **LED** comum (vermelho, verde, azul, etc.)
+- 🧪 Resistor de 220Ω
+- 🔌 Jumpers e Protoboard
+
+---
+
+## ⚙️ Esquema de Ligação
+
+```plaintext
+[ESP32 GPIO 2] -----|>|------[Resistor 220Ω]------[GND]
+                      LED
