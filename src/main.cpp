@@ -1,18 +1,24 @@
 #include <Arduino.h>
 
-// put function declarations here:
-int myFunction(int, int);
-
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+    Serial.begin(19200);
+    pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-}
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+    int estado_led = 0;
+
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(1000);
+
+    estado_led = digitalRead(LED_BUILTIN);
+    Serial.println(estado_led);
+
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(1000);
+
+    estado_led = digitalRead(LED_BUILTIN);
+    Serial.println(estado_led);
+    
 }
