@@ -17,5 +17,7 @@ Bem-vindo ao projeto **Pisca LED com ESP32**! Este projeto tem como objetivo dem
 ## ⚙️ Esquema de Ligação
 
 ```plaintext
-[ESP32 GPIO 2] -----|>|------[Resistor 220Ω]------[GND]
+[ESP32 GPIO_32] -----|>|------[Resistor 220Ω]------[GND]
                       LED
+
+OBS: Substitua a GPIO_32 pelo meno configurado no seu projeto!!
