@@ -10,6 +10,12 @@
 #define CARD_READ_DELAY 1000
 #define SIZE_BUFFER 18
 #define MAX_SIZE_BLOCK 16
+#define LED_GREEN GPIO_NUM_32
+#define LED_RED GPIO_NUM_33
+#define ELETRONIC_LOCK GPIO_NUM_26
+#define TIME_ELETRONIC_LOCK 10000
+#define ALERT_DELAY 200
+#define COUNT_ALERT_PULSES 10
 
 MFRC522::MIFARE_Key key;
 MFRC522::StatusCode status;
@@ -20,16 +26,23 @@ const char *validUIDs[] = {
     "8C:7B:C2:6E",
 };
 
-void readData();
+void readData(void);
 bool isAuthorizedCard(const char *uidStr);
 void dump_byte_array(char *uidStr, byte *buffer, byte bufferSize);
+void openElectroniclock(bool open);
 
-void setup()
+void setup(void)
 {
     Serial.begin(MONITOR_SPEED);
     SPI.begin();
     mfrc522.PCD_Init();
-
+    pinMode(ELETRONIC_LOCK, OUTPUT);
+    pinMode(LED_GREEN, OUTPUT);
+    pinMode(LED_RED, OUTPUT);
+    pinMode(ELETRONIC_LOCK, HIGH);
+    digitalWrite(LED_GREEN, LOW);
+    digitalWrite(LED_RED, HIGH);
+    
 #if DEBUG
     Serial.println("DEBUGER ON");
     Serial.print(F("Reader "));
@@ -40,7 +53,7 @@ void setup()
 #endif
 }
 
-void loop()
+void loop(void)
 {
     if (mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial())
     {
@@ -50,7 +63,7 @@ void loop()
     }
 }
 
-void readData()
+void readData(void)
 {
     // imprime os detalhes tecnicos do cartão/tag
     mfrc522.PICC_DumpDetailsToSerial(&(mfrc522.uid));
@@ -109,14 +122,16 @@ void readData()
 #if DEBUG
             Serial.println("Cartão autorizado!");
 #endif
-            // Lógica para abrir fechadura e piscar led verde
+            // Abre a fechadura eletrônica
+            openElectroniclock(true);
         }
         else
         {
 #if DEBUG
             Serial.println("Cartão negado!");
 #endif
-            // Lógica para  piscar led vermelho
+            // Emite alerta de código negado!
+            openElectroniclock(false);
         }
     }
 
@@ -163,5 +178,33 @@ void dump_byte_array(char *uidStr, byte *buffer, byte bufferSize)
         char hexByte[4];
         sprintf(hexByte, "%02X", buffer[i]);
         strcat(uidStr, hexByte);
+    }
+}
+
+void openElectroniclock(bool open)
+{
+    bool isOpen = digitalRead(LED_GREEN);
+
+    if (open and !isOpen)
+    {
+        digitalWrite(ELETRONIC_LOCK, LOW);
+        digitalWrite(LED_RED, LOW);
+        for (size_t i = 0; i < COUNT_ALERT_PULSES; i++)
+        {
+            digitalWrite(LED_GREEN, !digitalRead(LED_GREEN));
+            delay(ALERT_DELAY);
+        }
+        digitalWrite(LED_GREEN, HIGH);
+    }
+    else
+    {
+        digitalWrite(ELETRONIC_LOCK, HIGH);
+        digitalWrite(LED_GREEN, LOW);
+        for (size_t i = 0; i < COUNT_ALERT_PULSES; i++)
+        {
+            digitalWrite(LED_RED, !digitalRead(LED_RED));
+            delay(ALERT_DELAY);
+        }
+        digitalWrite(LED_RED, HIGH);
     }
 }
