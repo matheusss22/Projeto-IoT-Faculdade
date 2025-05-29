@@ -2,8 +2,6 @@
 
 Projeto desenvolvido com PlatformIO e ESP32 para controle de acesso com cartões RFID usando o módulo MFRC522.
 
----
-
 ## 📸 Funcionalidades:
 
 - ✅ Acesso via cartões RFID autorizados
@@ -12,27 +10,22 @@ Projeto desenvolvido com PlatformIO e ESP32 para controle de acesso com cartões
 - ✅ Debug serial ativado
 - ✅ Fácil cadastro de novos cartões
 
----
-
 ## 🔌 Esquemático de Ligações:
 
-(ESP32)GPIO05  <----------- (MFRC522) SS - SDA
-(ESP32)GPIO02  <----------- (MFRC522) RST             
-(ESP32)GPIO18 <----------- (MFRC522) SCK            
-(ESP32)GPIO23 <----------- (MFRC522) MOSI
-(ESP32)GPIO19 <----------- (MFRC522) MISO
-
-(ESP32)GPIO15 ------------> (MFRC522) FECHADURA ELETRÔNICA
-(ESP32)GPIO32 ------------> (MFRC522) LED VERDE
-(ESP32)GPIO33 ------------> (MFRC522) LED VERMELHO
+(ESP32)GPIO05  <----------- (MFRC522) SS - SDA</br>
+(ESP32)GPIO02  <----------- (MFRC522) RST</br>
+(ESP32)GPIO18 <----------- (MFRC522) SCK</br>
+(ESP32)GPIO23 <----------- (MFRC522) MOSI</br>
+(ESP32)GPIO19 <----------- (MFRC522) MISO</br>
+</br>
+(ESP32)GPIO15 ------------> (MFRC522) FECHADURA ELETRÔNICA</br>
+(ESP32)GPIO32 ------------> (MFRC522) LED VERDE</br>
+(ESP32)GPIO33 ------------> (MFRC522) LED VERMELHO</br>
 
 
  Observações:
  - Use conversores de nível lógico se necessário.
  - A fechadura pode ser um relé, solenóide ou trava magnética.
-
-
----
 
 ## 🚀 Instalação com PlatformIO
 
@@ -99,10 +92,10 @@ const char *authorizedUIDs[] = {
 
 rfid-door-lock-esp32/
 ├── doc/img
-├── include/                 
-├── lib/                     
+├── include/
+├── lib/
 ├── src/main.cpp
 ├── test
-├── .gitignore      
-├── platformio.ini           
+├── .gitignore
+├── platformio.ini
 └── README.md
