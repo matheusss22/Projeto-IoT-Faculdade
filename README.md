@@ -90,12 +90,12 @@ const char *authorizedUIDs[] = {
 
 ### 📁 Estrutura do Projeto
 
-rfid-door-lock-esp32/
-├── doc/img
-├── include/
-├── lib/
-├── src/main.cpp
-├── test
-├── .gitignore
-├── platformio.ini
-└── README.md
+rfid-door-lock-esp32/</br>
+├── doc/img</br>
+├── include/</br>
+├── lib/</br>
+├── src/main.cpp</br>
+├── test</br>
+├── .gitignore</br>
+├── platformio.ini</br>
+└── README.md</br>
