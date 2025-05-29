@@ -1,8 +1,8 @@
-# 🔐 Fechadura Eletrônica com Cartão RFID e ESP32 (PlatformIO)
+# 🔐 Fechadura Eletrônica com Cartão RFID e ESP32
 
 Projeto desenvolvido com PlatformIO e ESP32 para controle de acesso com cartões RFID usando o módulo MFRC522.
 
-## 📸 Funcionalidades:
+## Funcionalidades:
 
 - ✅ Acesso via cartões RFID autorizados
 - ✅ Controle de uma fechadura eletrônica
@@ -10,7 +10,7 @@ Projeto desenvolvido com PlatformIO e ESP32 para controle de acesso com cartões
 - ✅ Debug serial ativado
 - ✅ Fácil cadastro de novos cartões
 
-## 🔌 Esquemático de Ligações:
+## Esquemático de Ligações:
 
 (ESP32)GPIO05  <----------- (MFRC522) SS - SDA</br>
 (ESP32)GPIO02  <----------- (MFRC522) RST</br>
@@ -27,7 +27,7 @@ Projeto desenvolvido com PlatformIO e ESP32 para controle de acesso com cartões
  - Use conversores de nível lógico se necessário.
  - A fechadura pode ser um relé, solenóide ou trava magnética.
 
-## 🚀 Instalação com PlatformIO
+## Instalação com PlatformIO
 
 ### 1. Requisitos
 
@@ -88,7 +88,7 @@ const char *authorizedUIDs[] = {
 5. Reenvie o código (Ctrl + Alt + U).
 
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 rfid-door-lock-esp32/</br>
 ├── doc/img</br>
