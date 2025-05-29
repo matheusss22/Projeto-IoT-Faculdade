@@ -1,13 +1,16 @@
 #include <Arduino.h>
 
-#define PIN GPIO_NUM_32
+#define LED_GREEN GPIO_NUM_32
+#define LED_RED GPIO_NUM_33
 #define TIME 500
 
 void setup() {
-    pinMode(PIN, OUTPUT);
+    pinMode(LED_GREEN, OUTPUT);
+    pinMode(LED_RED, OUTPUT);
 }
 
 void loop() {
-    digitalWrite(PIN, !digitalRead(PIN));
+    digitalWrite(LED_GREEN, !digitalRead(LED_GREEN));
+    digitalWrite(LED_RED, !digitalRead(LED_RED));
     delay(TIME);
 }
