@@ -88,7 +88,7 @@ const char *authorizedUIDs[] = {
 5. Reenvie o código (Ctrl + Alt + U).
 
 
-### 📁 Estrutura do Projeto
+## 📁 Estrutura do Projeto
 
 rfid-door-lock-esp32/</br>
 ├── doc/img</br>
