@@ -1,33 +1,108 @@
-# 🛰️ Projeto: Leitor de Cartões RFID com ESP32 + RC522
+# 🔐 Fechadura Eletrônica com Cartão RFID e ESP32 (PlatformIO)
 
-Este projeto tem como objetivo realizar a leitura do **UID de cartões RFID** utilizando o módulo **RC522** com um **ESP32**, usando a biblioteca [MFRC522](https://github.com/miguelbalboa/rfid) e o **PlatformIO** como ambiente de desenvolvimento.
-
----
-
-## 📦 Componentes Utilizados
-
-| Componente        | Modelo / Especificação      |
-|-------------------|-----------------------------|
-| Microcontrolador  | ESP32 DevKit V1             |
-| Leitor RFID       | RC522                       |
-| Tags RFID         | 13.56 MHz                   |
-| IDE               | PlatformIO (VS Code)        |
-| Biblioteca        | `miguelbalboa/MFRC522@^1.4.12` |
+Projeto desenvolvido com PlatformIO e ESP32 para controle de acesso com cartões RFID usando o módulo MFRC522.
 
 ---
 
-## 🔌 Esquema de Ligações (Wiring)
+## 📸 Funcionalidades:
 
-| Pino RC522 | Pino ESP32 | Função             |
-|------------|------------|--------------------|
-| SDA        | GPIO 4     | `SS` - Chip Select |
-| SCK        | GPIO 18    | `SCK` - Clock      |
-| MOSI       | GPIO 23    | `MOSI` - Dados     |
-| MISO       | GPIO 19    | `MISO` - Dados     |
-| RST        | GPIO 2     | Reset              |
-| GND        | GND        | Terra              |
-| 3.3V       | 3.3V       | Alimentação        |
+- ✅ Acesso via cartões RFID autorizados
+- ✅ Controle de uma fechadura eletrônica
+- ✅ LEDs indicativos: verde (autorizado), vermelho (negado)
+- ✅ Debug serial ativado
+- ✅ Fácil cadastro de novos cartões
 
-⚠️ **Importante:** Nunca ligue o RC522 ao pino de 5V no ESP32! Use sempre **3.3V**, pois o ESP32 não é tolerante a 5V.
+---
 
-🔍 [Saiba mais sobre SPI](https://embarcados.com.br/spi-parte-1/)
+## 🔌 Esquemático de Ligações:
+
+(ESP32)GPIO05  <----------- (MFRC522) SS - SDA
+(ESP32)GPIO02  <----------- (MFRC522) RST             
+(ESP32)GPIO18 <----------- (MFRC522) SCK            
+(ESP32)GPIO23 <----------- (MFRC522) MOSI
+(ESP32)GPIO19 <----------- (MFRC522) MISO
+
+(ESP32)GPIO15 ------------> (MFRC522) FECHADURA ELETRÔNICA
+(ESP32)GPIO32 ------------> (MFRC522) LED VERDE
+(ESP32)GPIO33 ------------> (MFRC522) LED VERMELHO
+
+
+ Observações:
+ - Use conversores de nível lógico se necessário.
+ - A fechadura pode ser um relé, solenóide ou trava magnética.
+
+
+---
+
+## 🚀 Instalação com PlatformIO
+
+### 1. Requisitos
+
+- [VS Code](https://code.visualstudio.com/)
+- [PlatformIO IDE](https://platformio.org/install/ide?install=vscode)
+
+### 2. Clonar o repositório
+
+```bash
+git clone https://github.com/seu-usuario/rfid-door-lock-esp32.git
+cd rfid-door-lock-esp32
+```
+
+### 3. Abrir o projeto no VS Code
+- Vá em File > Open Folder e selecione o diretório clonado.
+
+### 4. Verifique o platformio.ini
+
+Exemplo básico:
+
+```ini
+[env:esp32dev]
+platform = espressif32
+board = esp32dev
+framework = arduino
+monitor_speed = 115200
+```
+
+### 5. Compilar e enviar para o ESP32
+- Clique em PlatformIO: Upload ou use o atalho Ctrl + Alt + U.
+
+### 6. Abrir o monitor serial
+- Use o ícone do plug serial ou Ctrl + Alt + M.
+
+### 7. Como Cadastrar Novos Cartões
+
+1. Abra o Monitor Serial após enviar o código.
+
+2. Aproxime um novo cartão RFID.
+
+3. Você verá algo como:
+
+```
+Card UID: 53 B2 61 0B
+Card SAK: 08
+PICC type: MIFARE 1KB
+Reading success: Success.       
+Unauthorized card.
+```
+4. Copie o UID exibido e adicione ao array authorizedUIDs:
+
+```cpp
+const char *authorizedUIDs[] = {
+    "8C:7B:C2:6E",
+    "AA:BB:CC:DD", // Novo cartão aqui
+};
+```
+5. Reenvie o código (Ctrl + Alt + U).
+
+
+### 📁 Estrutura do Projeto
+
+rfid-door-lock-esp32/
+├── doc/img
+├── include/                 
+├── lib/                     
+├── src/main.cpp
+├── test
+├── .gitignore      
+├── platformio.ini           
+└── README.md
