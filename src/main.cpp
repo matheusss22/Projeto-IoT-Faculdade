@@ -5,14 +5,14 @@
 #define DEBUG true
 #define READ_CARD_DATA false
 #define MONITOR_SPEED 115200
-#define SS_PIN GPIO_NUM_4
+#define SS_PIN GPIO_NUM_5
 #define RST_PIN GPIO_NUM_2
 #define CARD_READ_DELAY 1000
 #define SIZE_BUFFER 18
 #define MAX_SIZE_BLOCK 16
 #define LED_GREEN GPIO_NUM_32
 #define LED_RED GPIO_NUM_33
-#define ELETRONIC_LOCK GPIO_NUM_26
+#define ELETRONIC_LOCK GPIO_NUM_15
 #define TIME_ELETRONIC_LOCK 10000
 #define ALERT_DELAY 200
 #define COUNT_ALERT_PULSES 10
@@ -33,13 +33,15 @@ void openElectroniclock(bool open);
 
 void setup(void)
 {
+#if DEBUG
     Serial.begin(MONITOR_SPEED);
+#endif
     SPI.begin();
     mfrc522.PCD_Init();
     pinMode(ELETRONIC_LOCK, OUTPUT);
     pinMode(LED_GREEN, OUTPUT);
     pinMode(LED_RED, OUTPUT);
-    pinMode(ELETRONIC_LOCK, HIGH);
+    digitalWrite(ELETRONIC_LOCK, LOW);
     digitalWrite(LED_GREEN, LOW);
     digitalWrite(LED_RED, HIGH);
     
@@ -54,7 +56,7 @@ void setup(void)
 }
 
 void loop(void)
-{
+{    
     if (mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial())
     {
         readData();
@@ -65,21 +67,16 @@ void loop(void)
 
 void readData(void)
 {
-    // imprime os detalhes tecnicos do cartão/tag
+#if DEBUG
     mfrc522.PICC_DumpDetailsToSerial(&(mfrc522.uid));
+#endif
 
-    // Prepara a chave - todas as chaves estão configuradas para FFFFFFFFFFFFh (Padrão de fábrica).
     for (byte i = 0; i < 6; i++)
         key.keyByte[i] = 0xFF;
 
-    // buffer para colocar os dados ligos
     byte buffer[SIZE_BUFFER] = {0};
-
-    // bloco que faremos a operação
     byte bloco = 1;
     byte tamanho = SIZE_BUFFER;
-
-    // faz a autenticação do bloco que vamos operar
     status = mfrc522.PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, bloco, &key, &(mfrc522.uid)); // line 834 of MFRC522.cpp file
 
     if (status != MFRC522::STATUS_OK)
@@ -117,21 +114,31 @@ void readData(void)
         char uidStr[32] = "";
         dump_byte_array(uidStr, mfrc522.uid.uidByte, mfrc522.uid.size);
 
+        bool isOpen = digitalRead(ELETRONIC_LOCK);
+
         if (isAuthorizedCard(uidStr))
         {
+            if (!isOpen) {
 #if DEBUG
-            Serial.println("Cartão autorizado!");
+                Serial.println("Cartão Cadastrado!");
+                Serial.println("Fechadura liberada!");
 #endif
-            // Abre a fechadura eletrônica
-            openElectroniclock(true);
+                openElectroniclock(true);
+            } 
+            else
+            {
+#if DEBUG
+                Serial.println("Cartão Cadastrado!");
+                Serial.println("Fechadura Bloqueada!");
+#endif
+                openElectroniclock(false);
+            }
         }
         else
         {
 #if DEBUG
             Serial.println("Cartão negado!");
 #endif
-            // Emite alerta de código negado!
-            openElectroniclock(false);
         }
     }
 
@@ -183,11 +190,10 @@ void dump_byte_array(char *uidStr, byte *buffer, byte bufferSize)
 
 void openElectroniclock(bool open)
 {
-    bool isOpen = digitalRead(LED_GREEN);
 
-    if (open and !isOpen)
+    if (open)
     {
-        digitalWrite(ELETRONIC_LOCK, LOW);
+        digitalWrite(ELETRONIC_LOCK, HIGH);
         digitalWrite(LED_RED, LOW);
         for (size_t i = 0; i < COUNT_ALERT_PULSES; i++)
         {
@@ -198,7 +204,7 @@ void openElectroniclock(bool open)
     }
     else
     {
-        digitalWrite(ELETRONIC_LOCK, HIGH);
+        digitalWrite(ELETRONIC_LOCK, LOW);
         digitalWrite(LED_GREEN, LOW);
         for (size_t i = 0; i < COUNT_ALERT_PULSES; i++)
         {
