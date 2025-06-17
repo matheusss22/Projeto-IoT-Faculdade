@@ -20,13 +20,11 @@ MFRC522::MIFARE_Key key;
 MFRC522::StatusCode status;
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 
-// List of authorized UIDs
 const char *authorizedUIDs[] = {
     "8C:7B:C2:6E",
     "53:B2:61:0B"
 };
 
-// Function declarations
 void handleCardRead();
 bool isAuthorized(const char *uidStr);
 void formatUID(char *uidStr, byte *buffer, byte bufferSize);
@@ -76,6 +74,8 @@ void handleCardRead() {
         Serial.print("Authentication failed: ");
         Serial.println(mfrc522.GetStatusCodeName(status));
     #endif
+        mfrc522.PICC_HaltA();
+        mfrc522.PCD_StopCrypto1();
         return;
     }
 
@@ -85,6 +85,8 @@ void handleCardRead() {
         Serial.print("Reading failed: ");
         Serial.println(mfrc522.GetStatusCodeName(status));
     #endif
+        mfrc522.PICC_HaltA();
+        mfrc522.PCD_StopCrypto1();
         return;
     }
 
@@ -106,6 +108,12 @@ void handleCardRead() {
     } else {
     #if DEBUG
         Serial.println("Unauthorized card.");
+        for (size_t i = 0; i < 3; i++) { 
+            digitalWrite(LED_RED, LOW);
+            delay(100);
+            digitalWrite(LED_RED, HIGH);
+            delay(100);
+        }
     #endif
     }
 
@@ -144,6 +152,11 @@ void formatUID(char *uidStr, byte *buffer, byte bufferSize) {
 }
 
 void controlLock(bool open) {
+    SPI.end();
+    #if DEBUG
+    Serial.println("SPI communication ended temporarily.");
+    #endif
+
     if (open) {
         digitalWrite(ELECTRONIC_LOCK, HIGH);
         digitalWrite(LED_RED, LOW);
@@ -161,4 +174,10 @@ void controlLock(bool open) {
         }
         digitalWrite(LED_RED, HIGH);
     }
+
+    SPI.begin();
+    mfrc522.PCD_Init();
+    #if DEBUG
+    Serial.println("SPI communication re-enabled and RFID Reader re-initialized.");
+    #endif
 }
